@@ -87,8 +87,6 @@ import { ColumnProps } from '@/components/ProTable/interface'
 import MenuPopup from './components/MenuPopup.vue'
 import { Menu as MenuIcon } from '@element-plus/icons-vue'
 
-import { useAuthButtons } from '@/hooks/useAuthButtons'
-
 import {
 	fetchMenuTreeAll,
 	fetchMenuList,
@@ -98,6 +96,7 @@ import {
 	getDictInfo
 } from '@/api/modules/system'
 
+import { useAuthButtons } from '@/hooks/useAuthButtons'
 const { BUTTONS } = useAuthButtons()
 
 onMounted(async () => {
@@ -176,7 +175,7 @@ const columns: ColumnProps<Menu.ResList>[] = [
 		label: '操作',
 		width: 250,
 		fixed: 'right',
-		isShow: BUTTONS.value['menu:add'] || BUTTONS.value['menu:view'] || BUTTONS.value['menu:delete']
+		isShow: BUTTONS.value['menu:view'] || BUTTONS.value['menu:edit'] || BUTTONS.value['menu:delete']
 	}
 ]
 

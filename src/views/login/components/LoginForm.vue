@@ -16,10 +16,8 @@
 		</el-form-item>
 	</el-form>
 	<div class="login-btn">
-		<el-button :icon="CircleClose" round @click="resetForm(loginFormRef)" size="large">重置</el-button>
-		<el-button :icon="UserFilled" round @click="login(loginFormRef)" size="large" type="primary" :loading="loading">
-			登录
-		</el-button>
+		<el-button @click="resetForm(loginFormRef)" size="large">重置</el-button>
+		<el-button @click="login(loginFormRef)" size="large" type="primary" :loading="loading"> 登录 </el-button>
 	</div>
 </template>
 
@@ -35,7 +33,7 @@ import { KeepAliveStore } from '@/stores/modules/keepAlive'
 import { getTimeState } from '@/utils/util'
 import { HOME_URL } from '@/config/config'
 import { initDynamicRouter } from '@/routers/modules/dynamicRouter'
-import { CircleClose, UserFilled } from '@element-plus/icons-vue'
+// import { CircleClose, UserFilled } from '@element-plus/icons-vue'
 import type { ElForm } from 'element-plus'
 // import md5 from 'js-md5'
 

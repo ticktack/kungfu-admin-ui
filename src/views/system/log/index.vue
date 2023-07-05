@@ -15,8 +15,10 @@
 			>
 				<!-- 表格操作 -->
 				<template #operation="scope">
-					<el-button type="primary" link icon="View" @click="openLogPopup('view', scope.row)">查看详情</el-button>
-					<el-button type="primary" link icon="Delete" @click="deleteLog(scope.row)">删除</el-button>
+					<el-button v-auth="'log:view'" type="primary" link icon="View" @click="openLogPopup('view', scope.row)"
+						>查看详情</el-button
+					>
+					<el-button v-auth="'log:delete'" type="primary" link icon="Delete" @click="deleteLog(scope.row)">删除</el-button>
 				</template>
 			</ProTable>
 		</div>
@@ -33,6 +35,9 @@ import ProTable from '@/components/ProTable/index.vue'
 import { ColumnProps } from '@/components/ProTable/interface'
 import LogPopup from './components/LogPopup.vue'
 import { fetchLogList, deleteLogById, getLogInfo } from '@/api/modules/system'
+
+import { useAuthButtons } from '@/hooks/useAuthButtons'
+const { BUTTONS } = useAuthButtons()
 
 // 获取 ProTable 元素
 const proTable = ref()
@@ -51,7 +56,13 @@ const columns: ColumnProps<Log.ResList>[] = [
 	{ prop: 'address', label: '请求地区' },
 	{ prop: 'remark', label: '行为备注' },
 	{ prop: 'createTime', label: '创建时间' },
-	{ prop: 'operation', label: '操作', width: 200, fixed: 'right' }
+	{
+		prop: 'operation',
+		label: '操作',
+		width: 200,
+		fixed: 'right',
+		isShow: BUTTONS.value['log:view'] || BUTTONS.value['log:delete']
+	}
 ]
 
 // 删除日志

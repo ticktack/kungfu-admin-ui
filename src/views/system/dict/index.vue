@@ -5,7 +5,7 @@
 				ref="treeFilterRef"
 				label="dictName"
 				show-filter
-				show-head-operation
+				:show-head-operation="BUTTONS['dict:add']"
 				return-all-data
 				:data="treeData"
 				id="dictCode"
@@ -15,8 +15,14 @@
 			>
 				<template #operation="scope">
 					<template v-if="scope.node.level == 2">
-						<el-link type="primary" icon="Edit" @click="openDictPopup('edit', scope.node.data)" />
-						<el-link type="primary" icon="Delete" style="margin-left: 6px" @click="deleteDict(scope.node.data)" />
+						<el-link v-auth="'dict:edit'" type="primary" icon="Edit" @click="openDictPopup('edit', scope.node.data)" />
+						<el-link
+							v-auth="'dict:delete'"
+							type="primary"
+							icon="Delete"
+							style="margin-left: 6px"
+							@click="deleteDict(scope.node.data)"
+						/>
 					</template>
 				</template>
 			</TreeFilter>
@@ -39,14 +45,18 @@
 			>
 				<!-- 表格 header 按钮 -->
 				<template #tableHeader v-if="initParam.dictCode">
-					<el-button type="primary" icon="CirclePlus" @click="openDictItemPopup('add')">新增</el-button>
+					<el-button v-auth="'dict:add'" type="primary" icon="CirclePlus" @click="openDictItemPopup('add')">新增</el-button>
 				</template>
 
 				<!-- 表格操作 -->
 				<template #operation="scope">
-					<el-button type="primary" link icon="View" @click="openDictItemPopup('view', scope.row)">查看</el-button>
-					<el-button type="primary" link icon="EditPen" @click="openDictItemPopup('edit', scope.row)">编辑</el-button>
-					<el-button type="primary" link icon="Delete" @click="deleteDictItem(scope.row)">删除</el-button>
+					<el-button v-auth="'dict:view'" type="primary" link icon="View" @click="openDictItemPopup('view', scope.row)"
+						>查看</el-button
+					>
+					<el-button v-auth="'dict:edit'" type="primary" link icon="EditPen" @click="openDictItemPopup('edit', scope.row)"
+						>编辑</el-button
+					>
+					<el-button v-auth="'dict:delete'" type="primary" link icon="Delete" @click="deleteDictItem(scope.row)">删除</el-button>
 				</template>
 			</ProTable>
 
@@ -74,6 +84,9 @@ import {
 	saveOrUpdateDictItem,
 	deleteDictItemByIds
 } from '@/api/modules/system'
+
+import { useAuthButtons } from '@/hooks/useAuthButtons'
+const { BUTTONS } = useAuthButtons()
 
 onMounted(() => {
 	getTreeData()
@@ -134,7 +147,13 @@ const columns: ColumnProps<Dict.ResItemList>[] = [
 	{ prop: 'itemValue', label: '数据值' },
 	{ prop: 'displayNo', label: '排序', width: 100 },
 	{ prop: 'remark', label: '备注' },
-	{ prop: 'operation', label: '操作', width: 300, fixed: 'right' }
+	{
+		prop: 'operation',
+		label: '操作',
+		width: 300,
+		fixed: 'right',
+		isShow: BUTTONS.value['dict:view'] || BUTTONS.value['dict:edit'] || BUTTONS.value['dict:delete']
+	}
 ]
 
 // 删除字典

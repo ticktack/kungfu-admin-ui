@@ -16,14 +16,20 @@
 			>
 				<!-- 表格 header 按钮 -->
 				<template #tableHeader>
-					<el-button type="primary" icon="CirclePlus" @click="openUserPopup('add')">新增</el-button>
+					<el-button v-auth="'user:add'" type="primary" icon="CirclePlus" @click="openUserPopup('add')">新增</el-button>
 				</template>
 				<!-- 表格操作 -->
 				<template #operation="scope">
-					<el-button type="primary" link icon="View" @click="openUserPopup('edit', scope.row)">编辑</el-button>
-					<el-button type="primary" link icon="EditPen" @click="openUserRolePopup(scope.row)">角色</el-button>
-					<el-button type="primary" link icon="Lock" @click="resetUserPwd(scope.row)">重置密码</el-button>
-					<el-button type="primary" link icon="Delete" @click="deleteUser(scope.row)">删除</el-button>
+					<el-button v-auth="'user:edit'" type="primary" link icon="View" @click="openUserPopup('edit', scope.row)"
+						>编辑</el-button
+					>
+					<el-button v-auth="'user:addRole'" type="primary" link icon="EditPen" @click="openUserRolePopup(scope.row)"
+						>角色</el-button
+					>
+					<el-button v-auth="'user:resetPassword'" type="primary" link icon="Lock" @click="resetUserPwd(scope.row)"
+						>重置密码</el-button
+					>
+					<el-button v-auth="'user:delete'" type="primary" link icon="Delete" @click="deleteUser(scope.row)">删除</el-button>
 				</template>
 			</ProTable>
 		</div>
@@ -55,6 +61,9 @@ import {
 	saveUserRole,
 	getUserRoleCodes
 } from '@/api/modules/system'
+
+import { useAuthButtons } from '@/hooks/useAuthButtons'
+const { BUTTONS } = useAuthButtons()
 
 onMounted(() => {
 	getRoleTree()
@@ -123,16 +132,28 @@ const columns: ColumnProps<User.ResList>[] = [
 		label: '允许登录',
 		width: 140,
 		render: (scope: any) => {
-			return (
+			return BUTTONS.value['user:loginAllow'] ? (
 				<el-switch
 					model-value={scope.row.allowLogin}
 					active-text={scope.row.allowLogin ? '允许' : '禁止 '}
 					onClick={() => changeAllowLogin(scope.row)}
 				/>
+			) : (
+				<span>{scope.row.allowLogin ? '允许' : '禁止'}</span>
 			)
 		}
 	},
-	{ prop: 'operation', label: '操作', width: 330, fixed: 'right' }
+	{
+		prop: 'operation',
+		label: '操作',
+		width: 330,
+		fixed: 'right',
+		isShow:
+			BUTTONS.value['user:edit'] ||
+			BUTTONS.value['user:addRole'] ||
+			BUTTONS.value['user:resetPassword'] ||
+			BUTTONS.value['user:delete']
+	}
 ]
 
 // 切换允许登录状态

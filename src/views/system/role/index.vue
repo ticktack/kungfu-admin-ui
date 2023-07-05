@@ -5,7 +5,7 @@
 				ref="treeFilterRef"
 				label="roleName"
 				show-filter
-				show-head-operation
+				:show-head-operation="BUTTONS['role:add']"
 				return-all-data
 				:data="treeData"
 				id="roleCode"
@@ -14,10 +14,22 @@
 				@head-confirm="openRolePopup('add', treeData[0])"
 			>
 				<template #operation="scope">
-					<el-link type="primary" icon="DocumentAdd" @click="openRolePopup('add', scope.node.data)" />
+					<el-link v-auth="'role:add'" type="primary" icon="DocumentAdd" @click="openRolePopup('add', scope.node.data)" />
 					<template v-if="scope.node.level != 1">
-						<el-link type="primary" icon="Edit" style="margin-left: 6px" @click="openRolePopup('edit', scope.node.data)" />
-						<el-link type="primary" icon="Delete" style="margin-left: 6px" @click="deleteRole(scope.node.data)" />
+						<el-link
+							v-auth="'role:edit'"
+							type="primary"
+							icon="Edit"
+							style="margin-left: 6px"
+							@click="openRolePopup('edit', scope.node.data)"
+						/>
+						<el-link
+							v-auth="'role:delete'"
+							type="primary"
+							icon="Delete"
+							style="margin-left: 6px"
+							@click="deleteRole(scope.node.data)"
+						/>
 					</template>
 				</template>
 			</TreeFilter>
@@ -37,7 +49,7 @@
 					show-filter
 					:data="menuTreeData"
 					id="menuCode"
-					:show-head-operation="initParam.roleCode != 'root'"
+					:show-head-operation="initParam.roleCode != 'root' && BUTTONS['role:edit']"
 					head-operation-text="保存"
 					@head-confirm="saveRoleMenus"
 				/>
@@ -64,6 +76,9 @@ import {
 	saveRoleMenu
 	/*fetchRoleMenuTree*/
 } from '@/api/modules/system'
+
+import { useAuthButtons } from '@/hooks/useAuthButtons'
+const { BUTTONS } = useAuthButtons()
 
 onMounted(() => {
 	getTreeData()
@@ -109,9 +124,13 @@ watch(
 		setTimeout(() => {
 			// menuTreeFilterRef.value?.treeRef?.setCheckedKeys(roleMenuCodes)
 			roleMenuCodes.forEach((code: string) => {
-				const data: any = menuTreeFilterRef.value?.treeRef?.getNode(code).data
-				if (!data.children || !data.children.length) {
-					menuTreeFilterRef.value?.treeRef?.setChecked(code, true, false)
+				console.log(code)
+				const node: any = menuTreeFilterRef.value?.treeRef?.getNode(code)
+				if (node) {
+					const data: any = node.data
+					if (!data.children || !data.children.length) {
+						menuTreeFilterRef.value?.treeRef?.setChecked(code, true, false)
+					}
 				}
 			})
 		})

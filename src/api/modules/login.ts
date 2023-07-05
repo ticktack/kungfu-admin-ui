@@ -11,6 +11,11 @@ export const loginApi = (params: Login.ReqLoginForm) => {
 	return http.post<Login.ResLogin>(`/user-login/login`, params, { headers: { noLoading: true } })
 }
 
+// * 登录页左侧打字机展示内容
+export const chatGpt = () => {
+	return http.get<{ question: string; answer: string }>(`/user-login/chatGpt`)
+}
+
 // * 获取按钮权限
 export const getAuthButtonListApi = () => {
 	const globalStore = GlobalStore()

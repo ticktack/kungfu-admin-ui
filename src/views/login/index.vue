@@ -3,8 +3,9 @@
 		<div class="login-box">
 			<SwitchDark class="dark" />
 			<div class="login-left">
-				<img src="@/assets/images/login_left.png" alt="login" />
+				<ChatGpt></ChatGpt>
 			</div>
+
 			<div class="login-form">
 				<div class="login-logo">
 					<img class="login-icon" src="@/assets/images/logo.png" alt="" />
@@ -18,6 +19,7 @@
 
 <script setup lang="ts" name="login">
 import SwitchDark from '@/components/SwitchDark/index.vue'
+import ChatGpt from './components/ChatGpt.vue'
 import LoginForm from './components/LoginForm.vue'
 </script>
 

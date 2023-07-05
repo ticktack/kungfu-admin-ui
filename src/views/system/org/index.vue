@@ -5,7 +5,7 @@
 				ref="treeFilterRef"
 				label="orgName"
 				show-filter
-				show-head-operation
+				:show-head-operation="BUTTONS['org:add']"
 				return-all-data
 				:data="treeData"
 				id="orgCode"
@@ -14,10 +14,23 @@
 				@head-confirm="openOrgPopup('add', treeData[0])"
 			>
 				<template #operation="scope">
-					<el-link type="primary" icon="DocumentAdd" @click="openOrgPopup('add', scope.node.data)" />
+					<el-link v-auth="'org:add'" type="primary" icon="DocumentAdd" @click="openOrgPopup('add', scope.node.data)" />
+
 					<template v-if="scope.node.level != 1">
-						<el-link type="primary" icon="Edit" style="margin-left: 6px" @click="openOrgPopup('edit', scope.node.data)" />
-						<el-link type="primary" icon="Delete" style="margin-left: 6px" @click="deleteOrg(scope.node.data)" />
+						<el-link
+							v-auth="'org:edit'"
+							type="primary"
+							icon="Edit"
+							style="margin-left: 6px"
+							@click="openOrgPopup('edit', scope.node.data)"
+						/>
+						<el-link
+							v-auth="'org:delete'"
+							type="primary"
+							icon="Delete"
+							style="margin-left: 6px"
+							@click="deleteOrg(scope.node.data)"
+						/>
 					</template>
 				</template>
 			</TreeFilter>
@@ -52,6 +65,9 @@ import ProTable from '@/components/ProTable/index.vue'
 import { ColumnProps } from '@/components/ProTable/interface'
 import OrgPopup from './components/OrgPopup.vue'
 import { fetchOrgTreeAll, saveOrUpdateOrg, deleteOrgByIds, fetchUserList, getDictInfo } from '@/api/modules/system'
+
+import { useAuthButtons } from '@/hooks/useAuthButtons'
+const { BUTTONS } = useAuthButtons()
 
 onMounted(() => {
 	getTreeData()
